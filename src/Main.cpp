@@ -5,8 +5,8 @@
 int main(int argc, char *argv[])
 {
     Game game;
-    game.Initialize("2D Game Engine", 800, 600);
-    game.Run();
+    game.Initialize("2D Game Engine");
+    game.Run(); // While loop
     game.Destroy();
     return 0;
 }
