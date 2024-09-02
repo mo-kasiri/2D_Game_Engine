@@ -3,13 +3,13 @@
 Game::Game()
 {
     m_isRunning = false;
-    std::cout << "Game construction called!" << std::endl;
-    // TODO..
+    spdlog::info("Game instructor, {}!", "called");
+    //  TODO..
 }
 
 Game::~Game()
 {
-    std::cout << "Game destructor called!" << std::endl;
+    spdlog::info("Game destructor is called");
 }
 
 bool Game::Initialize(const char *windowTitle)
@@ -19,7 +19,8 @@ bool Game::Initialize(const char *windowTitle)
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
-        std::cerr << "Error Initializing SDL!" << std::endl;
+        // std::cerr << "Error Initializing SDL!" << std::endl;
+        spdlog::error("Error Initializing SDL!: {}", 1);
         return false;
     }
 
@@ -89,7 +90,11 @@ bool Game::Initialize(const char *windowTitle)
 
 void Game::Setup()
 {
-    // TODO: Initialize game objects
+    m_millisecsPreviousFrame = 0;
+
+    // Initialize game objects
+    m_playerPosition = glm::vec2(10, 10);
+    m_velocity = glm::vec2(20, 20);
 }
 
 void Game::Run()
@@ -125,7 +130,17 @@ void Game::ProcessInput()
 
 void Game::Update()
 {
-    // TODO:
+    // TODO: If we are too fast, waste some time untill we reach the MILISECS_PER_FRAME, lock execution insided while loop
+    unsigned int timeToWait = MILLISECONDS_PER_FRAME - (SDL_GetTicks() - m_millisecsPreviousFrame);
+    m_deltaTime = (SDL_GetTicks() - m_millisecsPreviousFrame) / 1000.0f;
+    m_millisecsPreviousFrame = SDL_GetTicks();
+    if (timeToWait > 0 && timeToWait <= MILLISECONDS_PER_FRAME)
+    {
+        SDL_Delay(timeToWait);
+    }
+
+    // Updateing game Actors
+    m_playerPosition += m_velocity * m_deltaTime;
 }
 
 void Game::Render()
@@ -139,9 +154,14 @@ void Game::Render()
     SDL_FreeSurface(surface);
 
     // What is the destination rectangle that we want to place our texture
-    SDL_Rect dstRect = {10, 10, 32, 32};
+    SDL_Rect dstRect = {
+        static_cast<int>(m_playerPosition.x),
+        static_cast<int>(m_playerPosition.y),
+        32,
+        32};
     SDL_RenderCopy(m_renderer, texture, NULL, &dstRect);
     SDL_DestroyTexture(texture);
+
     SDL_RenderPresent(m_renderer);
 }
 
