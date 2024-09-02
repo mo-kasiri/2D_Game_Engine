@@ -1,6 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "Game.h"
+#include "Game/Game.h"
 
 int main(int argc, char *argv[])
 {
