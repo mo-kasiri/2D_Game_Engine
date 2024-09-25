@@ -16,8 +16,6 @@ SRC_FILES = ./src/*.cpp \
 LINKER_FLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -llua5.3 -lm
 OBJ_NAME = gameengine
 
-
-
 ###########################################################
 # Declare some Makefile Rules
 ###########################################################
